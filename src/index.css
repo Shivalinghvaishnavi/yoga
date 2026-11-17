@@ -1,0 +1,56 @@
+:root { color-scheme: dark; --bg: #11181c; --card: #1c262c; --fg: #f2f5f6; --dim: #9db0b8; --accent: #3fbfae; font-family: system-ui, sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); }
+button { background: var(--accent); color: #062421; border: 0; border-radius: 10px; padding: 12px 18px; font-size: 1rem; font-weight: 600; cursor: pointer; }
+.home { max-width: 640px; margin: 0 auto; padding: 24px 16px 48px; }
+.days { list-style: none; padding: 0; display: grid; gap: 10px; }
+.days li { background: var(--card); border-radius: 14px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.days li div:first-child { display: grid; }
+.days span { color: var(--dim); }
+.days .soon { opacity: .45; }
+.actions { display: flex; gap: 8px; }
+.safety { color: var(--dim); font-size: .85rem; line-height: 1.5; }
+.player { position: fixed; inset: 0; background: #000; display: flex; flex-direction: column; overflow: hidden; }
+.player.done { text-align: center; padding: 24px; align-content: center; }
+.video { pointer-events: none; position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; }
+.fallback { background: #0b1013; display: grid; place-content: center; text-align: center; padding: 24px 24px 90px; gap: 6px; }
+.fallback ul { text-align: left; color: var(--dim); font-size: clamp(1rem, 2vw, 1.4rem); max-width: 700px; margin: 12px auto 0; }
+.fb-title { color: #f0b429; margin: 0; }
+.fb-name { font-size: clamp(1.6rem, 4vw, 3rem); margin: 0; }
+.bar { flex: none; height: 8px; background: #ffffff22; }
+.bar div { height: 100%; background: var(--accent); transition: width .25s linear; }
+.hud { flex: none; padding: 20px 24px 10px; display: flex; justify-content: space-between; align-items: center; gap: 16px; background: #000; }
+.title { font-size: clamp(1.5rem, 4vw, 3.2rem); font-weight: 800; line-height: 1.1; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: clamp(1rem, 2.4vw, 1.9rem); margin-top: 6px; }
+.timer { font-size: clamp(2.6rem, 9vw, 7rem); font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
+.next { color: #9db0b8; }
+.caption { flex: none; min-height: 3.6em; display: grid; place-items: center; padding: 8px 24px; background: #000; color: #fff; text-align: center; font-size: clamp(1.05rem, 2.2vw, 1.8rem); }
+.paused { position: absolute; z-index: 4; font-size: 4rem; font-weight: 800; background: #000a; padding: 16px 40px; border-radius: 20px; }
+.controls { flex: none; display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; padding: 10px 8px 14px; background: #000; }
+.controls button { background: #ffffff26; color: var(--fg); padding: 10px 14px; }
+.credit { position: absolute; right: 12px; top: 8px; z-index: 2; font-size: .75rem; color: #ffffffa0; text-shadow: 0 1px 4px #000; }
+.pacer { background: radial-gradient(#10343a, #050b0d); display: grid; place-items: center; }
+.orb { width: 18vmin; height: 18vmin; border-radius: 50%; background: var(--accent); opacity: .7; animation: breathe 10s ease-in-out infinite; }
+@keyframes breathe { 0%, 100% { transform: scale(1); } 40% { transform: scale(2.4); } }
+.stage { position: relative; flex: 1; min-height: 0; background: #000; }
+.weekbar { display: flex; align-items: center; justify-content: space-between; background: var(--card); border-radius: 14px; padding: 8px 12px; }
+.weekbar div { display: grid; text-align: center; }
+.weekbar span { color: var(--accent); }
+.weekbar button:disabled { opacity: .35; cursor: default; }
+.changes { color: var(--dim); font-size: .9rem; margin: 10px 2px 14px; }
+.plan { background: var(--card); border-radius: 14px; padding: 12px 16px; margin: 14px 0; color: var(--dim); font-size: .9rem; line-height: 1.5; }
+.plan summary { color: var(--fg); font-weight: 600; cursor: pointer; }
+.review { padding: 8px; }
+.rv-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.rv-meta { color: var(--dim); font-size: .8rem; margin: 4px 0; }
+.rv-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; }
+.rv-status { font-size: .8rem; color: var(--accent); margin-bottom: 4px; }
+.yt iframe { width: 100%; height: 100%; border: 0; pointer-events: none; }
+/* If autoplay is blocked the video never starts: let a tap reach YouTube's play button until it is playing. */
+.video.yt:not(.on) { pointer-events: auto; }
+.video.yt:not(.on) iframe { pointer-events: auto; }
+/* Very narrow windows: let the timer wrap under the title instead of clipping. */
+.hud { flex-wrap: wrap; }
+.hud-main { flex: 1 1 11rem; min-width: 0; }
+.rv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 6px; }
+.rv-cell .rv-meta { font-size: .65rem; margin: 0 0 2px; }
