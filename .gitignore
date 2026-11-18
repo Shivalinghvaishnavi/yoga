@@ -26,3 +26,11 @@ dist-ssr
 # Local tooling and working notes
 .claude/
 PLAN.md
+.netlify/
+
+# Character model (large binary); render clips with studio/clips.py
+studio/character/*.blend
+studio/character/*.blend1
+__pycache__/
+*.pyc
+studio/tts/cache/

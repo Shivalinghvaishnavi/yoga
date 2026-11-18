@@ -54,3 +54,7 @@ button { background: var(--accent); color: #062421; border: 0; border-radius: 10
 .hud-main { flex: 1 1 11rem; min-width: 0; }
 .rv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 6px; }
 .rv-cell .rv-meta { font-size: .65rem; margin: 0 0 2px; }
+.video.gen { object-fit: contain; background: #b9bcbc; }
+.pickrow { display: flex; gap: 8px; margin: 10px 0 0; }
+.pickrow button { flex: 1; background: #ffffff1c; color: var(--fg); }
+.pickrow button.on { background: var(--accent); color: #062421; }

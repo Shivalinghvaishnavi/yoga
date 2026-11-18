@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { exercises } from '../data/exercises.ts'
 import { schedule } from '../data/schedule.ts'
 import { totalSec } from '../engine/compile.ts'
-import { VideoPane } from './VideoPane.tsx'
+import { COUNT_AT } from '../engine/cues.ts'
+import { VideoPane, type VideoSource } from './VideoPane.tsx'
 import { usePlayer } from './usePlayer.ts'
 
 const mmss = (s: number) => {
@@ -10,7 +11,7 @@ const mmss = (s: number) => {
   return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`
 }
 
-export function Player({ day, week, resumeFrom, onExit }: { day: number; week: number; resumeFrom: number; onExit: () => void }) {
+export function Player({ day, week, resumeFrom, source, onExit }: { day: number; week: number; resumeFrom: number; source: VideoSource; onExit: () => void }) {
   const { runner, speaker, snap, caption, steps } = usePlayer(day, week, resumeFrom)
   const [volume, setVolume] = useState(1)
   const [muted, setMuted] = useState(false)
@@ -38,7 +39,7 @@ export function Player({ day, week, resumeFrom, onExit }: { day: number; week: n
   const planned = totalSec(steps)
   const done = steps.slice(0, snap.index).reduce((a, s) => a + s.durationSec, 0) + snap.elapsed
   const remaining = step ? step.durationSec - snap.elapsed : 0
-  const rep = step?.kind === 'work' && step.mode === 'reps' ? Math.min(step.target, Math.floor(snap.elapsed / step.tempo) + 1) : 0
+  const rep = step?.kind === 'work' && step.mode === 'reps' ? Math.min(step.target, snap.elapsed < COUNT_AT ? 1 : Math.floor((snap.elapsed - COUNT_AT) / step.tempo) + 1) : 0
   const nextEx = steps.slice(snap.index + 1).find((s) => s.exerciseId !== step?.exerciseId)
   const paused = snap.status === 'paused'
   const toggle = () => (paused ? runner.resume() : runner.pause())
@@ -86,7 +87,7 @@ export function Player({ day, week, resumeFrom, onExit }: { day: number; week: n
         {step?.kind !== 'brief' && <div className="timer">{mmss(remaining)}</div>}
       </div>
       <div className="stage">
-        {step && ex && <VideoPane exerciseId={step.exerciseId} replayKey={replayKey} paused={paused} />}
+        {step && ex && <VideoPane step={step} replayKey={replayKey} paused={paused} token={snap.token} source={source} />}
         {paused && <div className="paused">Paused</div>}
       </div>
       {captions && <div className="caption">{caption}</div>}

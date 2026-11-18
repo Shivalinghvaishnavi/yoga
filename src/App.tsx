@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { schedule } from './data/schedule.ts'
 import { paramsFor, phases } from './data/progression.ts'
 import { Player } from './player/Player.tsx'
+import type { VideoSource } from './player/VideoPane.tsx'
 import Review from './Review.tsx'
 import { loadProgress } from './engine/storage.ts'
 
@@ -27,7 +28,11 @@ function Home() {
     setWeekState(next)
     try { localStorage.setItem(WEEK_KEY, String(next)) } catch { /* ignore */ }
   }
-  if (active) return <Player day={active.day} week={week} resumeFrom={active.from} onExit={() => setActive(null)} />
+  const [source, setSourceState] = useState<VideoSource>(() => {
+    try { return localStorage.getItem('gf.videoSource') === 'real' ? 'real' : 'animated' } catch { return 'animated' }
+  })
+  const setSource = (v: VideoSource) => { setSourceState(v); try { localStorage.setItem('gf.videoSource', v) } catch { /* ignore */ } }
+  if (active) return <Player day={active.day} week={week} resumeFrom={active.from} source={source} onExit={() => setActive(null)} />
   const p = paramsFor(week)
   return (
     <main className="home">
@@ -38,6 +43,10 @@ function Home() {
         <button onClick={() => setWeek(week + 1)} disabled={week >= 12} aria-label="Next week">+</button>
       </div>
       <p className="changes">{p.changes}</p>
+      <div className="pickrow" role="group" aria-label="Instructor video">
+        <button className={source === 'animated' ? 'on' : ''} onClick={() => setSource('animated')}>Animated instructor</button>
+        <button className={source === 'real' ? 'on' : ''} onClick={() => setSource('real')}>Real video clips</button>
+      </div>
       <ul className="days">
         {DAYS.map((name, i) => {
           const plan = schedule.find((d) => d.day === i)
