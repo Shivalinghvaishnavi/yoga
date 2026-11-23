@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { schedule } from './data/schedule.ts'
 import { paramsFor, phases } from './data/progression.ts'
 import { Player } from './player/Player.tsx'
 import type { VideoSource } from './player/VideoPane.tsx'
 import Review from './Review.tsx'
 import { loadProgress } from './engine/storage.ts'
-import { unlockSpeech } from './engine/speech.ts'
+import { englishVoices, pickVoice, saveVoiceName, savedVoiceName, testVoice, unlockSpeech } from './engine/speech.ts'
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 const WEEK_KEY = 'gf.weekOverride', START_KEY = 'gf.startDate'
@@ -29,6 +29,14 @@ function Home() {
     setWeekState(next)
     try { localStorage.setItem(WEEK_KEY, String(next)) } catch { /* ignore */ }
   }
+  const [voices, setVoices] = useState(englishVoices)
+  const [voiceName, setVoiceName] = useState(() => savedVoiceName() || pickVoice()?.name || '')
+  useEffect(() => {
+    if (typeof speechSynthesis === 'undefined') return
+    const load = () => { setVoices(englishVoices()); setVoiceName((n) => n || savedVoiceName() || pickVoice()?.name || '') }
+    speechSynthesis.addEventListener('voiceschanged', load); load()
+    return () => speechSynthesis.removeEventListener('voiceschanged', load)
+  }, [])
   const [source, setSourceState] = useState<VideoSource>(() => {
     try { return localStorage.getItem('gf.videoSource') === 'real' ? 'real' : 'animated' } catch { return 'animated' }
   })
@@ -63,6 +71,17 @@ function Home() {
           )
         })}
       </ul>
+      <details className="plan">
+        <summary>Voice and sound check</summary>
+        <p>If you cannot hear the counting or breathing guide, press Test voice. Then try another voice from the list.</p>
+        <div className="pickrow">
+          <select value={voiceName} onChange={(e) => { setVoiceName(e.target.value); saveVoiceName(e.target.value) }} aria-label="Voice">
+            {voices.length === 0 && <option value="">No English voice found</option>}
+            {voices.map((v) => <option key={v.name} value={v.name}>{v.name}{v.localService ? '' : ' (online)'}</option>)}
+          </select>
+          <button onClick={() => { unlockSpeech(); testVoice() }}>Test voice</button>
+        </div>
+      </details>
       <details className="plan">
         <summary>How the 12 weeks progress</summary>
         {phases.map((ph) => <p key={ph.name}><strong>{ph.name} (weeks {ph.weeks}).</strong> {ph.goal}</p>)}

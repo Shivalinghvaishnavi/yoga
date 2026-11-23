@@ -1,8 +1,33 @@
+const alive = new Set<SpeechSynthesisUtterance>()
+function keep(u: SpeechSynthesisUtterance) {
+  alive.add(u)
+  const drop = () => { alive.delete(u) }
+  u.addEventListener('end', drop); u.addEventListener('error', drop)
+}
+
+const VOICE_KEY = 'gf.voice'
+export const savedVoiceName = (): string => { try { return localStorage.getItem(VOICE_KEY) ?? '' } catch { return '' } }
+export const saveVoiceName = (n: string) => { try { localStorage.setItem(VOICE_KEY, n) } catch { /* ignore */ } }
+export const englishVoices = (): SpeechSynthesisVoice[] =>
+  typeof speechSynthesis === 'undefined' ? [] : speechSynthesis.getVoices().filter((v) => v.lang.toLowerCase().startsWith('en')).sort((a, b) => Number(b.localService) - Number(a.localService) || a.name.localeCompare(b.name))
+
+// Speaks a short sample so you can check the sound and the chosen voice.
+export function testVoice(text = 'Inhale, two, three, four. Exhale, two, three, four, five, six.') {
+  if (typeof speechSynthesis === 'undefined') return
+  speechSynthesis.cancel()
+  const u = new SpeechSynthesisUtterance(text)
+  u.voice = pickVoice(); u.rate = 0.95
+  keep(u)
+  speechSynthesis.speak(u)
+}
+
 const PREFERRED = ['Samantha', 'Karen', 'Tara', 'Flo', 'Shelley', 'Sandy', 'Google UK English Female']
 
 export function pickVoice(): SpeechSynthesisVoice | null {
   if (typeof speechSynthesis === 'undefined') return null
   const en = speechSynthesis.getVoices().filter((v) => v.lang.toLowerCase().startsWith('en'))
+  const chosen = savedVoiceName() && en.find((v) => v.name === savedVoiceName())
+  if (chosen) return chosen
   // Voices that run on the device are preferred: network voices can silently drop short utterances such as counts.
   const local = en.filter((v) => v.localService)
   for (const pool of [local, en]) {
@@ -55,6 +80,7 @@ export class Speaker {
     if (this.muted || typeof speechSynthesis === 'undefined') return
     const u = new SpeechSynthesisUtterance(text)
     u.voice = this.voice ?? pickVoice(); u.volume = this.volume; u.rate = 1
+    keep(u)
     speechSynthesis.speak(u)
   }
 
@@ -77,6 +103,7 @@ export class Speaker {
       u.voice = this.voice ?? pickVoice(); u.volume = this.volume; u.rate = 0.95
       u.onend = advance
       u.onerror = advance // an engine error must not freeze the session
+      keep(u)
       speechSynthesis.speak(u)
     }
     // Chrome can drop an utterance spoken in the same instant as a cancel(); wait a moment after interrupting.

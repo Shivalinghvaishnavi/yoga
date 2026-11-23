@@ -5,6 +5,7 @@ import { totalSec } from '../engine/compile.ts'
 import { COUNT_AT } from '../engine/cues.ts'
 import { VideoPane, type VideoSource } from './VideoPane.tsx'
 import { usePlayer } from './usePlayer.ts'
+import { useMediaControls } from './useMediaControls.ts'
 
 const mmss = (s: number) => {
   const t = Math.max(0, Math.ceil(s))
@@ -44,6 +45,11 @@ export function Player({ day, week, resumeFrom, source, onExit }: { day: number;
   const paused = snap.status === 'paused'
   const toggle = () => (paused ? runner.resume() : runner.pause())
   const replay = () => { runner.replay(); setReplayKey((k) => k + 1) }
+  useMediaControls({
+    title: step ? (step.kind === 'rest' ? 'Rest' : ex?.name ?? 'Workout') : 'Workout complete',
+    subtitle: `${schedule[day].title} - week ${week}`,
+    paused, onPause: () => runner.pause(), onResume: () => runner.resume(), onNext: () => runner.skip(), onPrevious: replay,
+  })
   const fullscreen = () => (document.fullscreenElement ? document.exitFullscreen() : root.current?.requestFullscreen())
 
   useEffect(() => {
