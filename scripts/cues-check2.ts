@@ -3,14 +3,13 @@ import { exercises } from '../src/data/exercises.ts'
 import { compileDay } from '../src/engine/compile.ts'
 import { buildCues } from '../src/engine/cues.ts'
 
-// Shows the first spoken cues for a breathing step and the end of a timed hold, and checks nothing is late or too crowded.
-const day = (d: number, id: string) => compileDay(schedule[d], 1).find((s) => s.kind === 'work' && s.exerciseId === id)!
-const show = (d: number, id: string, from: number, to: number) => {
-  const st = day(d, id), c = buildCues(st, exercises[id])
-  console.log(`${id} (${st.durationSec}s): ${c.length} cues`)
-  for (const x of c.filter((x) => x.at >= from && x.at <= to)) console.log(`   ${x.at.toFixed(1).padStart(6)}s  ${x.text}`)
+// Prints the tail of timed steps (time countdown) and checks no cue is late or crowded.
+const find = (d: number, id: string) => compileDay(schedule[d], 1).find((s) => s.kind === 'work' && s.exerciseId === id)!
+const tail = (d: number, id: string, from: number) => {
+  const st = find(d, id), c = buildCues(st, exercises[id])
+  console.log(`${id} (${st.durationSec}s): ${c.length} cues; from ${from}s:`, c.filter((x) => x.at >= from).map((x) => `${x.at.toFixed(0)}:${x.text}`).join(' | '))
 }
-show(0, 'breath_relax', 0, 22); show(1, 'gentle_breath', 0, 12); show(6, 'body_scan', 0, 12); show(1, 'childs_pose', 160, 181); show(5, 'butterfly', 110, 125)
+tail(0, 'hip_circles', 60); tail(0, 'brisk_walk', 500); tail(1, 'doorway_chest', 40); tail(0, 'march', 130)
 for (const d of schedule) for (const s of compileDay(d, 12)) {
   if (s.kind !== 'work') continue
   const c = buildCues(s, exercises[s.exerciseId])

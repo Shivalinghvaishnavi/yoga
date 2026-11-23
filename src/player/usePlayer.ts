@@ -3,7 +3,8 @@ import { exercises } from '../data/exercises.ts'
 import { schedule } from '../data/schedule.ts'
 import { briefText, compileDay } from '../engine/compile.ts'
 import { Runner, type Snapshot } from '../engine/runner.ts'
-import { COUNT_AT, buildCues, restLine, type Cue } from '../engine/cues.ts'
+import { buildCues, restLine, type Cue } from '../engine/cues.ts'
+import { countAt, countPlan, shown } from '../engine/counting.ts'
 import { Speaker } from '../engine/speech.ts'
 import { clearProgress, saveProgress } from '../engine/storage.ts'
 
@@ -38,10 +39,10 @@ export function usePlayer(day: number, week: number, resumeFrom = 0) {
           L.cues = buildCues(step, ex)
         } else speaker.say([restLine(step, next, exercises[(next ?? step).exerciseId].name)], () => {})
       } else if (step && s.status === 'running') {
-        if (step.kind === 'work' && step.mode === 'reps') {
-          const rep = s.elapsed < COUNT_AT ? 0 : Math.floor((s.elapsed - COUNT_AT) / step.tempo) + 1
-          if (rep > L.rep && rep <= step.target) { L.rep = rep; speaker.count(String(rep)) }
-        } else if (step.kind === 'work') { /* timed work: cues below */
+        const plan = step.kind === 'work' ? countPlan(step) : null
+        if (plan) {
+          const n = countAt(plan, s.elapsed)
+          if (n > L.rep && n <= plan.last) { L.rep = n; speaker.count(String(shown(plan, n))) }
         } else if (step.kind === 'rest' && !L.cued && step.durationSec - s.elapsed <= 5) {
           L.cued = 1; speaker.say(['Get ready.'], () => {})
         }

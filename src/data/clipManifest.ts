@@ -4,7 +4,7 @@ export const clipManifest: Record<string, ClipInfo> = {
   "march": {
     "file": "march.mp4",
     "period": 2.0,
-    "repsPerLoop": 0
+    "repsPerLoop": 1
   },
   "brisk_walk": {
     "file": "brisk_walk.mp4",
@@ -19,17 +19,17 @@ export const clipManifest: Record<string, ClipInfo> = {
   "hip_circles": {
     "file": "hip_circles.mp4",
     "period": 4.0,
-    "repsPerLoop": 0
+    "repsPerLoop": 1
   },
   "arm_circles": {
     "file": "arm_circles.mp4",
     "period": 4.0,
-    "repsPerLoop": 0
+    "repsPerLoop": 1
   },
   "shoulder_rolls": {
     "file": "shoulder_rolls.mp4",
     "period": 4.0,
-    "repsPerLoop": 0
+    "repsPerLoop": 1
   },
   "bw_squat": {
     "file": "bw_squat.mp4",
@@ -99,12 +99,12 @@ export const clipManifest: Record<string, ClipInfo> = {
   "cat_cow": {
     "file": "cat_cow.mp4",
     "period": 6.0,
-    "repsPerLoop": 0
+    "repsPerLoop": 1
   },
   "thoracic_ext_towel": {
     "file": "thoracic_ext_towel.mp4",
     "period": 6.0,
-    "repsPerLoop": 0
+    "repsPerLoop": 1
   },
   "doorway_chest": {
     "file": "doorway_chest.mp4",
@@ -119,7 +119,7 @@ export const clipManifest: Record<string, ClipInfo> = {
   "hip_mobility": {
     "file": "hip_mobility.mp4",
     "period": 6.0,
-    "repsPerLoop": 0
+    "repsPerLoop": 1
   },
   "low_impact_dance": {
     "file": "low_impact_dance.mp4",
@@ -183,7 +183,7 @@ export const clipManifest: Record<string, ClipInfo> = {
     "left": "thoracic_rotation.mp4",
     "right": "thoracic_rotation__R.mp4",
     "period": 6.0,
-    "repsPerLoop": 0
+    "repsPerLoop": 1
   },
   "side_leg_raise": {
     "left": "side_leg_raise.mp4",

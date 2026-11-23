@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import type { Step } from '../data/types.ts'
 import type { ClipInfo } from '../data/clipManifest.ts'
 import { COUNT_AT } from '../engine/cues.ts'
+import { countPlan } from '../engine/counting.ts'
 
 export function clipFile(clip: ClipInfo, side?: 'left' | 'right'): string {
   return (side === 'right' ? clip.right : clip.left) ?? clip.file ?? clip.left ?? clip.right ?? ''
@@ -14,8 +15,8 @@ export function GenClip({ clip, step, token, paused, onFail }: { clip: ClipInfo;
   const want = useRef(true)
   const pausedRef = useRef(paused)
   const file = clipFile(clip, step.side ?? 'left')
-  const repLoop = step.mode === 'reps' && clip.repsPerLoop > 0
-  const rate = repLoop ? Math.min(4, Math.max(0.25, clip.period / clip.repsPerLoop / step.tempo)) : 1
+  const repLoop = countPlan(step, clip) !== null          // counted loops start on the first count, in step with the voice
+  const rate = repLoop && step.mode === 'reps' ? Math.min(4, Math.max(0.25, clip.period / clip.repsPerLoop / step.tempo)) : 1
 
   useEffect(() => {
     const v = ref.current

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { exercises } from '../data/exercises.ts'
 import { schedule } from '../data/schedule.ts'
 import { totalSec } from '../engine/compile.ts'
-import { COUNT_AT } from '../engine/cues.ts'
+import { countAt, countPlan, shown } from '../engine/counting.ts'
 import { VideoPane, type VideoSource } from './VideoPane.tsx'
 import { usePlayer } from './usePlayer.ts'
 import { useMediaControls } from './useMediaControls.ts'
@@ -40,7 +40,8 @@ export function Player({ day, week, resumeFrom, source, onExit }: { day: number;
   const planned = totalSec(steps)
   const done = steps.slice(0, snap.index).reduce((a, s) => a + s.durationSec, 0) + snap.elapsed
   const remaining = step ? step.durationSec - snap.elapsed : 0
-  const rep = step?.kind === 'work' && step.mode === 'reps' ? Math.min(step.target, snap.elapsed < COUNT_AT ? 1 : Math.floor((snap.elapsed - COUNT_AT) / step.tempo) + 1) : 0
+  const plan = step ? countPlan(step) : null
+  const counted = plan ? Math.min(plan.last, Math.max(1, countAt(plan, snap.elapsed))) : 0
   const nextEx = steps.slice(snap.index + 1).find((s) => s.exerciseId !== step?.exerciseId)
   const paused = snap.status === 'paused'
   const toggle = () => (paused ? runner.resume() : runner.pause())
@@ -86,7 +87,8 @@ export function Player({ day, week, resumeFrom, source, onExit }: { day: number;
           <div className="meta">
             {step?.kind === 'work' && <span>Set {step.set} of {step.totalSets}</span>}
             {step?.kind === 'brief' && <span>Get ready</span>}
-            {rep > 0 && <span>Rep {rep} of {step?.target}</span>}
+            {plan && step?.mode === 'reps' && <span>Rep {counted} of {step.target}</span>}
+            {plan && step?.mode === 'timed' && <span>Count {shown(plan, counted)}</span>}
             {nextEx && <span className="next">Next: {exercises[nextEx.exerciseId].name}</span>}
           </div>
         </div>
