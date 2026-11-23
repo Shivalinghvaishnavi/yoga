@@ -14,6 +14,17 @@ const WALK = [
   'Keep a steady pace.', 'Shoulders relaxed, stand tall.', 'Breathe easily. You should be able to talk.',
   'You are doing really well. Keep it going.',
 ]
+// Breathing steps are guided continuously: one 10 s cycle = 4 s in, 6 s out, matching the on-screen breathing circle.
+export const BREATH_IDS = new Set(['gentle_breath', 'breath_relax', 'diaphragm_breath', 'body_scan'])
+
+function breathCues(d: number): Cue[] {
+  const cues: Cue[] = []
+  for (let base = 0.5; base < d - 14; base += 10) {
+    cues.push({ at: base, text: 'Inhale, two, three, four.' }, { at: base + 4.0, text: 'Exhale, two, three, four, five, six.' })
+  }
+  return cues
+}
+
 const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1)
 
 // Spoken cues scheduled inside a work step. Rep counts are spoken separately, one per rep.
@@ -29,6 +40,12 @@ export function buildCues(step: Step, ex: Exercise): Cue[] {
     return cues
   }
   const d = step.durationSec, cues: Cue[] = []
+  if (BREATH_IDS.has(ex.id)) {
+    cues.push(...breathCues(d))
+    if (d >= 120) cues.push({ at: d / 2 - 1.5, text: 'Halfway there.' })
+    if (d >= 40) cues.push({ at: d - 10, text: 'Begin to bring your awareness back.' })
+    return cues.sort((a, b) => a.at - b.at)
+  }
   const pool = step.section === 'relax' ? RELAX : step.section === 'cardio' ? WALK : null
   if (pool) {
     const gap = step.section === 'relax' ? 50 : 60
@@ -43,6 +60,7 @@ export function buildCues(step: Step, ex: Exercise): Cue[] {
     for (let at = 60; at < d - 15; at += 60) if (Math.abs(at - d / 2) > 15) cues.push({ at, text: ex.breathing })
   }
   if (d >= 40) cues.push({ at: d - 10, text: step.section === 'relax' ? 'Begin to bring your awareness back.' : 'Last ten seconds.' })
+  if (!pool && d >= 20 && d <= 200) ['Five', 'Four', 'Three', 'Two', 'One'].forEach((w, i) => cues.push({ at: d - 5 + i, text: w })) // countdown to the end of a hold
   return cues.sort((a, b) => a.at - b.at)
 }
 

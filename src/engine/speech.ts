@@ -3,11 +3,26 @@ const PREFERRED = ['Samantha', 'Karen', 'Tara', 'Flo', 'Shelley', 'Sandy', 'Goog
 export function pickVoice(): SpeechSynthesisVoice | null {
   if (typeof speechSynthesis === 'undefined') return null
   const en = speechSynthesis.getVoices().filter((v) => v.lang.toLowerCase().startsWith('en'))
-  for (const name of PREFERRED) {
-    const hit = en.find((v) => v.name.startsWith(name))
-    if (hit) return hit
+  // Voices that run on the device are preferred: network voices can silently drop short utterances such as counts.
+  const local = en.filter((v) => v.localService)
+  for (const pool of [local, en]) {
+    for (const name of PREFERRED) {
+      const hit = pool.find((v) => v.name.startsWith(name))
+      if (hit) return hit
+    }
   }
-  return en[0] ?? null
+  return local[0] ?? en[0] ?? null
+}
+
+// Phones and some browsers only allow speech after the page has spoken once from a tap. Call this from a click handler.
+export function unlockSpeech() {
+  if (typeof speechSynthesis === 'undefined') return
+  try {
+    const u = new SpeechSynthesisUtterance(' ')
+    u.volume = 0
+    speechSynthesis.speak(u)
+    speechSynthesis.resume()
+  } catch { /* nothing to unlock */ }
 }
 
 // Speaks one line at a time. Every call to say() cancels whatever came before, so a
@@ -34,7 +49,17 @@ export class Speaker {
   pause() { if (typeof speechSynthesis !== 'undefined') speechSynthesis.pause() }
   resume() { if (typeof speechSynthesis !== 'undefined') speechSynthesis.resume() }
 
+  // A rep count: queued behind whatever is being said (never cutting it off, never dropped by a cancel).
+  count(text: string) {
+    this.onCaption(text)
+    if (this.muted || typeof speechSynthesis === 'undefined') return
+    const u = new SpeechSynthesisUtterance(text)
+    u.voice = this.voice ?? pickVoice(); u.volume = this.volume; u.rate = 1
+    speechSynthesis.speak(u)
+  }
+
   say(lines: string[], onDone: () => void) {
+    const busy = typeof speechSynthesis !== 'undefined' && (speechSynthesis.speaking || speechSynthesis.pending)
     this.cancel()
     const gen = this.gen
     const next = (i: number) => {
@@ -54,6 +79,8 @@ export class Speaker {
       u.onerror = advance // an engine error must not freeze the session
       speechSynthesis.speak(u)
     }
-    next(0)
+    // Chrome can drop an utterance spoken in the same instant as a cancel(); wait a moment after interrupting.
+    if (busy) setTimeout(() => next(0), 70)
+    else next(0)
   }
 }

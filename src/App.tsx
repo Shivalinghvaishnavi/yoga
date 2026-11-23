@@ -5,6 +5,7 @@ import { Player } from './player/Player.tsx'
 import type { VideoSource } from './player/VideoPane.tsx'
 import Review from './Review.tsx'
 import { loadProgress } from './engine/storage.ts'
+import { unlockSpeech } from './engine/speech.ts'
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 const WEEK_KEY = 'gf.weekOverride', START_KEY = 'gf.startDate'
@@ -55,8 +56,8 @@ function Home() {
             <li key={name} className={plan ? '' : 'soon'}>
               <div><strong>{name}</strong><span>{plan ? plan.title : 'Coming soon'}</span></div>
               {plan && <div className="actions">
-                <button onClick={() => setActive({ day: i, from: 0 })}>Play</button>
-                {saved && <button onClick={() => setActive({ day: i, from: saved.index })}>Resume</button>}
+                <button onClick={() => { unlockSpeech(); setActive({ day: i, from: 0 }) }}>Play</button>
+                {saved && <button onClick={() => { unlockSpeech(); setActive({ day: i, from: saved.index }) }}>Resume</button>}
               </div>}
             </li>
           )

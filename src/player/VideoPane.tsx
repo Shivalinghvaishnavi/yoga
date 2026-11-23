@@ -29,7 +29,7 @@ export function VideoPane({ step, replayKey, paused, token, source }: { step: St
   }
   if (breathing) {
     return (
-      <div className="video pacer" role="img" aria-label="Breathing guide: in for four, out for six">
+      <div key={`pacer-${token}`} className="video pacer" role="img" aria-label="Breathing guide: in for four, out for six">
         <div className="orb" />
       </div>
     )

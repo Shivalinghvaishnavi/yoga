@@ -40,7 +40,7 @@ export function usePlayer(day: number, week: number, resumeFrom = 0) {
       } else if (step && s.status === 'running') {
         if (step.kind === 'work' && step.mode === 'reps') {
           const rep = s.elapsed < COUNT_AT ? 0 : Math.floor((s.elapsed - COUNT_AT) / step.tempo) + 1
-          if (rep > L.rep && rep <= step.target) { L.rep = rep; speaker.say([String(rep)], () => {}) }
+          if (rep > L.rep && rep <= step.target) { L.rep = rep; speaker.count(String(rep)) }
         } else if (step.kind === 'work') { /* timed work: cues below */
         } else if (step.kind === 'rest' && !L.cued && step.durationSec - s.elapsed <= 5) {
           L.cued = 1; speaker.say(['Get ready.'], () => {})
