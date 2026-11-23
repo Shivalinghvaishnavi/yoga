@@ -15,7 +15,7 @@ RES, FPS, JOBS = "800x450", "24", 3
 
 # exercise id -> (motion, loop seconds, reps per loop) or (None, ...) for left/right pairs {side: motion}
 SINGLE = {
-    "march": ("march", 2.0, 1), "brisk_walk": ("brisk_walk", 1.6, 0), "gentle_walk": ("gentle_walk", 2.6, 0),
+    "march": ("march", 2.0, 1), "brisk_walk": ("brisk_walk", 1.6, 1), "gentle_walk": ("gentle_walk", 2.6, 1),
     "hip_circles": ("hip_circles", 4.0, 1), "arm_circles": ("arm_circles", 4.0, 1), "shoulder_rolls": ("shoulder_rolls", 4.0, 1),
     "bw_squat": ("bw_squat", 4.0, 1), "band_squat": ("band_squat", 4.0, 1), "band_rdl": ("band_rdl", 4.0, 1),
     "band_deadlift": ("band_deadlift", 4.0, 1), "glute_bridge": ("glute_bridge", 4.0, 1), "dead_bug": ("dead_bug", 8.0, 2),
@@ -23,7 +23,7 @@ SINGLE = {
     "band_row": ("band_row", 4.0, 1), "wall_pushup": ("wall_pushup", 4.0, 1), "wall_angels": ("wall_angels", 4.0, 1),
     "chin_tucks": ("chin_tucks", 4.0, 1), "cat_cow": ("cat_cow", 6.0, 1), "thoracic_ext_towel": ("thoracic_ext_towel", 6.0, 1),
     "doorway_chest": ("doorway_chest", 14.0, 0), "childs_pose": ("childs_pose", 8.0, 0), "hip_mobility": ("hip_mobility", 6.0, 1),
-    "low_impact_dance": ("low_impact_dance", 4.0, 0), "butterfly": ("butterfly", 8.0, 0), "seated_fold": ("seated_fold", 8.0, 0),
+    "low_impact_dance": ("low_impact_dance", 4.0, 1), "butterfly": ("butterfly", 8.0, 0), "seated_fold": ("seated_fold", 8.0, 0),
     "diaphragm_breath": ("diaphragm_breath", 6.0, 0), "neck_shoulder": ("neck_shoulder", 14.0, 0), "body_scan": ("body_scan", 8.0, 0),
     "full_stretch": ("full_stretch", 42.0, 0), "lower_stretch": ("lower_stretch", 28.0, 0),
 }

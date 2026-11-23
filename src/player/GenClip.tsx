@@ -15,7 +15,8 @@ export function GenClip({ clip, step, token, paused, onFail }: { clip: ClipInfo;
   const want = useRef(true)
   const pausedRef = useRef(paused)
   const file = clipFile(clip, step.side ?? 'left')
-  const repLoop = countPlan(step, clip) !== null          // counted loops start on the first count, in step with the voice
+  const kind = countPlan(step, clip)?.kind
+  const repLoop = kind === 'reps' || kind === 'loop'      // counted loops start on the first count, in step with the voice
   const rate = repLoop && step.mode === 'reps' ? Math.min(4, Math.max(0.25, clip.period / clip.repsPerLoop / step.tempo)) : 1
 
   useEffect(() => {

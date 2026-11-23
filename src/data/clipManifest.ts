@@ -9,12 +9,12 @@ export const clipManifest: Record<string, ClipInfo> = {
   "brisk_walk": {
     "file": "brisk_walk.mp4",
     "period": 1.6,
-    "repsPerLoop": 0
+    "repsPerLoop": 1
   },
   "gentle_walk": {
     "file": "gentle_walk.mp4",
     "period": 2.6,
-    "repsPerLoop": 0
+    "repsPerLoop": 1
   },
   "hip_circles": {
     "file": "hip_circles.mp4",
@@ -124,7 +124,7 @@ export const clipManifest: Record<string, ClipInfo> = {
   "low_impact_dance": {
     "file": "low_impact_dance.mp4",
     "period": 4.0,
-    "repsPerLoop": 0
+    "repsPerLoop": 1
   },
   "butterfly": {
     "file": "butterfly.mp4",

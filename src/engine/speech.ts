@@ -1,8 +1,14 @@
 const alive = new Set<SpeechSynthesisUtterance>()
 function keep(u: SpeechSynthesisUtterance) {
   alive.add(u)
+  let started = false
   const drop = () => { alive.delete(u) }
+  u.addEventListener('start', () => { started = true })
   u.addEventListener('end', drop); u.addEventListener('error', drop)
+  // If the engine gets stuck (it can after many rapid skips) an utterance never starts: flush it so later lines still speak.
+  setTimeout(() => {
+    if (!started && alive.has(u) && typeof speechSynthesis !== 'undefined') { speechSynthesis.cancel(); speechSynthesis.resume() }
+  }, 2500)
 }
 
 const VOICE_KEY = 'gf.voice'

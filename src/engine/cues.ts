@@ -5,11 +5,6 @@ export const COUNT_AT = 2.5
 
 export interface Cue { at: number; text: string } // `at` = seconds into the step
 
-const WALK = [
-  'Keep a steady pace.', 'Shoulders relaxed, stand tall.', 'Breathe easily. You should be able to talk.',
-  'You are doing really well. Keep it going.',
-]
-
 // Breathing steps are guided continuously: one 10 s cycle = 4 s in, 6 s out, matching the on-screen breathing circle.
 export const BREATH_IDS = new Set(['gentle_breath', 'breath_relax', 'diaphragm_breath', 'body_scan'])
 
@@ -58,12 +53,8 @@ export function buildCues(step: Step, ex: Exercise): Cue[] {
   const calls = timeCallouts(d)
   const clear = (at: number) => calls.every((c) => Math.abs(c.at - at) > 4)   // time callouts win over other cues
   const cues: Cue[] = []
-  if (step.section === 'cardio') {
-    for (let at = 60, i = 0; at < d - 30; at += 60, i++) if (clear(at)) cues.push({ at, text: WALK[i % WALK.length] })
-  } else if (d >= 30) {
-    if (clear(d / 2)) cues.push({ at: d / 2, text: `Halfway there. ${posture}` })
-    for (let at = 60; at < d - 15; at += 60) if (Math.abs(at - d / 2) > 15 && clear(at)) cues.push({ at, text: ex.breathing })
-  }
+  // No spoken encouragement at fixed intervals: the count, the halfway call and the time countdown are the guidance.
+  if (d >= 30 && clear(d / 2)) cues.push({ at: d / 2, text: step.section === 'cardio' ? 'Halfway there.' : `Halfway there. ${posture}` })
   return [...cues, ...calls].sort((a, b) => a.at - b.at)
 }
 
