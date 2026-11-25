@@ -41,10 +41,10 @@ export const schedule: DayPlan[] = [
     goals: ['Strengthen the whole body', 'Build muscular endurance', 'Support insulin sensitivity'],
     items: [
       it('march', 'warmup', 't', 150), it('arm_circles', 'warmup', 't', 120),
-      it('band_row', 'main', 'r', 10, 2, 45), it('wall_pushup', 'main', 'r', 8, 2, 30),
-      it('band_squat', 'main', 'r', 10, 2, 45), it('band_curl', 'main', 'r', 10, 2, 30),
-      it('bird_dog', 'main', 'r', 8, 2, 30), it('band_pullapart', 'main', 'r', 12, 2, 30),
-      it('march', 'cardio', 't', 600), it('full_stretch', 'cooldown', 't', 300), it('breath_relax', 'relax', 't', 300),
+      it('band_squat', 'main', 'r', 10, 2, 45), it('band_row', 'main', 'r', 10, 2, 45),
+      it('wall_pushup', 'main', 'r', 8, 2, 30), it('band_curl', 'main', 'r', 10, 2, 30),
+      it('band_pullapart', 'main', 'r', 12, 2, 30), it('bird_dog', 'main', 'r', 8, 2, 30),
+      it('brisk_walk', 'cardio', 't', 600), it('full_stretch', 'cooldown', 't', 300), it('breath_relax', 'relax', 't', 300),
     ],
   },
   {
@@ -73,8 +73,8 @@ export const schedule: DayPlan[] = [
     goals: ['Build cardiovascular endurance', 'Improve flexibility', 'Reduce stress'],
     items: [
       it('march', 'warmup', 't', 180), it('brisk_walk', 'cardio', 't', 420), it('low_impact_dance', 'cardio', 't', 600),
-      it('side_stretch', 'main', 't', 45, 2, 5), it('butterfly', 'main', 't', 120),
-      it('low_lunge', 'main', 't', 60, 2, 5), it('seated_fold', 'main', 't', 120),
+      it('side_stretch', 'main', 't', 45, 2, 5), it('low_lunge', 'main', 't', 60, 2, 5),
+      it('butterfly', 'main', 't', 120), it('seated_fold', 'main', 't', 120),
       it('hip_mobility', 'main', 't', 120), it('breath_relax', 'relax', 't', 420),
     ],
   },
